@@ -10,7 +10,15 @@
     "lint": "next lint",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "tsx scripts/init-db.ts"
+    "db:migrate:create": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:status": "prisma migrate status",
+    "db:migrate:resolve": "prisma migrate resolve",
+    "db:seed": "tsx scripts/init-db.ts",
+    "db:backup": "./deployment/backup-db.sh",
+    "db:restore": "./deployment/restore-db.sh",
+    "deploy": "./deployment/deploy.sh",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",

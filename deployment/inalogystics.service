@@ -1,0 +1,42 @@
+[Unit]
+Description=InaLogystics Office Management System
+Documentation=https://github.com/inalogy/inalogystics
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=inalogystics
+Group=inalogystics
+WorkingDirectory=/home/inalogystics/apps/inalogystics
+Environment="NODE_ENV=production"
+Environment="PORT=3002"
+
+# Load environment variables from .env file
+EnvironmentFile=/home/inalogystics/apps/inalogystics/.env
+
+# Start command
+ExecStart=/usr/bin/npm start
+
+# Restart policy
+Restart=always
+RestartSec=10
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/inalogystics/apps/inalogystics
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=inalogystics
+
+[Install]
+WantedBy=multi-user.target
