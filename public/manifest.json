@@ -1,0 +1,22 @@
+{
+  "name": "InaLogystics - Office Space Management",
+  "short_name": "InaLogystics",
+  "description": "Manage parking spaces and shared desks in your office",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

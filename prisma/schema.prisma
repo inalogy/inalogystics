@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  emailVerified   DateTime?
+  name            String?
+  image           String?
+  department      String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  accounts        Account[]
+  sessions        Session[]
+  parkingBookings ParkingBooking[]
+  deskBookings    DeskBooking[]
+  notifications   Notification[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model ParkingSpace {
+  id              String   @id @default(uuid())
+  spotNumber      String   @unique
+  location        String   // "Garage" or "Parking House"
+  createdAt       DateTime @default(now())
+
+  bookings        ParkingBooking[]
+}
+
+model ParkingBooking {
+  id              String   @id @default(uuid())
+  userId          String
+  parkingSpaceId  String
+  date            DateTime
+  startTime       DateTime
+  endTime         DateTime
+  status          BookingStatus @default(ACTIVE)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User     @relation(fields: [userId], references: [id])
+  parkingSpace    ParkingSpace @relation(fields: [parkingSpaceId], references: [id])
+
+  @@unique([parkingSpaceId, date, startTime])
+}
+
+model Desk {
+  id              String   @id @default(uuid())
+  deskNumber      String   @unique
+  floor           String   @default("6th Floor")
+  zone            String
+  hasMonitor      Boolean  @default(true)
+  hasStandingDesk Boolean  @default(false)
+  isShared        Boolean  @default(true)
+  x               Float    // Position on floor plan (percentage)
+  y               Float    // Position on floor plan (percentage)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  bookings        DeskBooking[]
+}
+
+model DeskBooking {
+  id              String   @id @default(uuid())
+  userId          String
+  deskId          String
+  date            DateTime
+  startTime       DateTime
+  endTime         DateTime
+  status          BookingStatus @default(ACTIVE)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  user            User     @relation(fields: [userId], references: [id])
+  desk            Desk     @relation(fields: [deskId], references: [id])
+  
+  @@unique([deskId, date, startTime])
+}
+
+model Notification {
+  id              String   @id @default(uuid())
+  userId          String
+  title           String
+  message         String
+  type            NotificationType
+  isRead          Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  
+  user            User     @relation(fields: [userId], references: [id])
+}
+
+enum BookingStatus {
+  ACTIVE
+  CANCELLED
+  COMPLETED
+}
+
+enum NotificationType {
+  BOOKING_CONFIRMATION
+  BOOKING_REMINDER
+  BOOKING_CANCELLED
+  SPACE_AVAILABLE
+}

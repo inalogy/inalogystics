@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --ina-primary: #014059;
+    --ina-cyan: #35C6F4;
+    --ina-dark: #012030;
+    --ina-light: #F0F8FC;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900 antialiased;
+  }
+}
+
+@layer components {
+  .ina-card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300;
+  }
+  
+  .ina-button-primary {
+    @apply bg-[#35C6F4] hover:bg-[#2AB5E3] text-white font-semibold px-6 py-3 rounded-md transition-all duration-200 transform hover:scale-105;
+  }
+  
+  .ina-button-secondary {
+    @apply bg-[#014059] hover:bg-[#012030] text-white font-semibold px-6 py-3 rounded-md transition-all duration-200;
+  }
+  
+  .ina-gradient {
+    @apply bg-gradient-to-br from-[#014059] to-[#012030];
+  }
+  
+  .ina-text-gradient {
+    @apply bg-gradient-to-r from-[#014059] to-[#35C6F4] bg-clip-text text-transparent;
+  }
+}
